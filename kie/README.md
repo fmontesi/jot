@@ -2,7 +2,7 @@
 
 jot will initially contains 2 different features for the jolie testing suite
 
-1. launch testing see `service.test.ol`
+1. launch testing see `a.ol` and `A.test.ol`
 2. mockup generator, the mockup generator goal is to generate the mockup service on given jolie interface. It should be use to mock an implementation of a service via an interface
 
 for example on 2
@@ -29,10 +29,7 @@ generates following
 
 ```jolie
 // service2_mock.ol
-
-interface A {
-    RequestResponse: twice(int)(int)
-}
+from service import A
 
 type comm {
     location: string
@@ -46,9 +43,11 @@ service mainMock(param: comm) {
         protocol: p.protocol
         interfaces: A
     }
-
-    twice(req)(res){
-        // mock implementation
+    main {
+       twice(req)(res){
+           // mock implementation
+           throw( UnimplementedTest )
+       }
     }
 }
 ```
@@ -58,3 +57,16 @@ then we can attach service2_mock to any service that we need. for both testing a
 Note:
 
 things to think of, inspect the internal behavior of the service eg. if the operation is called. perhaps fairly easy via creating a proxy service which act as an orchestrator between services. And this proxy service observes the calling of every operation and checks it's order/correctness.
+
+```
+From  A -> B -> C
+to
+  Proxy
+/   |   \
+A   B    C
+Then use the information from operations call to proxy to validate the operation calls
+```
+
+Note 2:
+
+explicit declare test cases outside of jolie file? like -> read from json
