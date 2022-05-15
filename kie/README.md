@@ -2,8 +2,8 @@
 
 jot will initially contains 2 different features for the jolie testing suite
 
-1. launch testing see `a.ol` and `A.test.ol`
-2. mockup generator, the mockup generator goal is to generate the mockup service on given jolie interface. It should be use to mock an implementation of a service via an interface
+1. Testing suite see `example/A.ol` and `example/Atest.ol`
+2. mockup generator, the mockup generator goal is to generate the mockup service on given jolie interface. It should be use to mock an implementation of a service via an interface. May use joliemock in cooperate for creating test doubles
 
 for example on 2
 
@@ -47,6 +47,7 @@ service mainMock(param: comm) {
        twice(req)(res){
            // mock implementation
            throw( UnimplementedTest )
+           // or use joliemock to create test double
        }
     }
 }
