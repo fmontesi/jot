@@ -1,3 +1,5 @@
+from .time import Instant
+
 ///@ValueObject
 type Address {
 	id:long
@@ -18,7 +20,7 @@ RequestResponse:
 type CustomerProfile {
 	firstName:string
 	lastName:string
-	birthday:??? // TODO
+	birthday:Instant
 	currentAddress:Address
 	email:string
 	phoneNumber:string
@@ -64,18 +66,28 @@ RequestResponse:
 	updateCustomerProfile(UpdateCustomerProfileRequest)(void)
 }
 
-interface CustomerFactoryAPI {
-RequestResponse:
-	createCustomer(CustomerProfile)(CustomerAggregate)
-	//, formatPhoneNumber
+// interface CustomerFactoryAPI {
+// RequestResponse:
+// 	createCustomer(CustomerProfile)(CustomerAggregate)
+// 	//, formatPhoneNumber
+// }
+
+type Pair {
+	key: string
+	value: string
 }
 
-/*
+type MultiMap {
+	entries: Pair
+}
+
+type city: string
+type postalCode: string
+
 ///@DDDService
 interface CityLookupService {
 RequestResponse:
-	loadLookupMap(???)(???),
-	getLookupMap(???)(???),
-	getCitiesForPostalCode(???)(???)
+	loadLookupMap(void)(MultiMap),
+	getLookupMap(postalCode)(MultiMap),
+	getCitiesForPostalCode(city)(MultiMap)
 }
-*/

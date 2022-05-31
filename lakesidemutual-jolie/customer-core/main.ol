@@ -1,12 +1,20 @@
-from interface import CustomerInformationHolder
+from interfaces import CustomerInformationHolder
+from console import Console
+from string_utils import StringUtils
 type CustomerCoreParams {
 	location:string
 }
 
-service CustomerCore( params:CustomerCoreParams ) {
+service CustomerCore( /*params:CustomerCoreParams*/ ) {
+
+	embed Console as Console
+	embed StringUtils as StringUtils
+	
 	inputPort Input {
-		location: params.location
+		location: "socket://localhost:5555"//params.location
 		protocol: http {
+			debug=true
+			debug.showContent=true
 			osc.getCustomer << {
 				template = "/customers/{ids}"
 				method = "get"
@@ -25,5 +33,31 @@ service CustomerCore( params:CustomerCoreParams ) {
 			// }
 		}
 		interfaces: CustomerInformationHolder
+	}
+
+	execution: concurrent
+
+	main{
+
+		[getCustomers(req)(res){
+			nullProcess
+		}]
+
+		[getCustomer(req)(res){
+			valueToPrettyString@StringUtils(req)(prettyReq)
+			println@Console(prettyReq)()
+			// query string breakssssss 
+			// res = {
+			// 	customers=void
+			// }
+		}]
+
+		[updateCustomer(req)(res){
+			nullProcess
+		}]
+		
+		// changeAddress,
+		// createCustomer
+
 	}
 }

@@ -1,3 +1,5 @@
+from .time import Instant
+
 type Address {
 	streetAddress:string
 	postalCode:string
@@ -5,12 +7,12 @@ type Address {
 }
 
 type Email:string(regex("^(.+)@(.+)$"))
-type PhoneNumber:string(regex(???))
+type PhoneNumber:string//(regex(???))
 
 type CustomerProfileUpdateRequest {
 	firstName:string
 	lastName:string
-	birthday:???
+	birthday:Instant
 	streetAddress:string
 	postalCode:string
 	city:string
@@ -22,7 +24,7 @@ type CustomerResponse {
 	customerId:string
 	firstName:string
 	lastName:string
-	birthday:???
+	birthday:Instant
 	streetAddress:string
 	postalCode:string
 	city:string
@@ -34,7 +36,7 @@ type CustomerResponse {
 }
 
 type CustomersResponse {
-	customers*:Customer
+	customers*:CustomerResponse
 }
 
 type PaginatedCustomerResponse {
@@ -42,7 +44,7 @@ type PaginatedCustomerResponse {
 	limit:int
 	offset:int
 	size:int
-	customers*:Customer
+	customers*:CustomersResponse
 }
 
 type CustomerNotFoundExceptionType:string

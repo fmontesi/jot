@@ -1,11 +1,11 @@
-from .dtos import CitiesResponse
-
+from .dtos import CitiesResponse, PaginatedCustomerResponse, CustomersResponse, CustomerProfileUpdateRequest, CustomerResponse
+from .domain import CustomerId
 interface CityReferenceDataHolder {
 RequestResponse:
 	getCitiesForPostalCode(string)(CitiesResponse)
 }
 
-type GetCustomerRequest {
+type GetCustomersRequest {
 	filter?:string //< default: ""
 	limit?:int //< default: 10
 	offset?:int //< default: 0
