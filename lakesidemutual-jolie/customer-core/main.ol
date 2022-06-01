@@ -13,8 +13,8 @@ service CustomerCore( /*params:CustomerCoreParams*/ ) {
 	inputPort Input {
 		location: "socket://localhost:5555"//params.location
 		protocol: http {
-			debug=true
-			debug.showContent=true
+			// debug=true
+			// debug.showContent=true
 			osc.getCustomer << {
 				template = "/customers/{ids}"
 				method = "get"
