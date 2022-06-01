@@ -37,7 +37,7 @@ service CustomerCore( /*params:CustomerCoreParams*/ ) {
 
 	execution: concurrent
 
-	main{
+	main {
 
 		[getCustomers(req)(res){
 			nullProcess
