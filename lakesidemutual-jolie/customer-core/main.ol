@@ -11,10 +11,8 @@ service CustomerCore( /*params:CustomerCoreParams*/ ) {
 	embed StringUtils as StringUtils
 	
 	inputPort Input {
-		location: "socket://localhost:5555"//params.location
+		location: "socket://localhost:5555"
 		protocol: http {
-			// debug=true
-			// debug.showContent=true
 			osc.getCustomer << {
 				template = "/customers/{ids}"
 				method = "get"
@@ -31,6 +29,7 @@ service CustomerCore( /*params:CustomerCoreParams*/ ) {
 			// 	template = "/customers"
 			// 	method = "post"
 			// }
+			// debug << true { showContent = true }
 		}
 		interfaces: CustomerInformationHolder
 	}
