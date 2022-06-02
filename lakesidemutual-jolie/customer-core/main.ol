@@ -25,11 +25,10 @@ service CustomerCore( /*params:CustomerCoreParams*/ ) {
 			// 	template = "/customers/{customerId}/address"
 			// 	method = "put"
 			// }
-			// osc.createCustomer << {
-			// 	template = "/customers"
-			// 	method = "post"
-			// }
-			// debug << true { showContent = true }
+			osc.createCustomer << {
+				template = "/customers"
+				method = "post"
+			}
 		}
 		interfaces: CustomerInformationHolder
 	}
@@ -49,14 +48,34 @@ service CustomerCore( /*params:CustomerCoreParams*/ ) {
 			// res = {
 			// 	customers=void
 			// }
+			
 		}]
 
 		[updateCustomer(req)(res){
 			nullProcess
 		}]
 		
+
+		[createCustomer(req)(res){
+			res = {
+				customerId = "123"
+				firstName = req.firstName
+				lastName = req.lastName
+				birthday = {
+					seconds = req.birthday.seconds
+					nanos = req.birthday.nanos
+				}
+				streetAddress = req.streetAddress
+				postalCode = req.postalCode
+				city = req.city
+				email = req.email
+				phoneNumber = req.phoneNumber
+				moveHistory {
+				}
+			}
+		}]
+
 		// changeAddress,
-		// createCustomer
 
 	}
 }

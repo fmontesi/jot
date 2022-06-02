@@ -27,6 +27,6 @@ RequestResponse:
 	getCustomers(GetCustomersRequest)(PaginatedCustomerResponse),
 	getCustomer(GetCustomerRequest)(CustomersResponse),
 	updateCustomer(UpdateCustomerRequest)(CustomerResponse),
+	createCustomer(CustomerProfileUpdateRequest)(CustomerResponse) /// mimick lakeside muntual for CustomerProfileUpdateRequest.
 	// changeAddress,
-	// createCustomer
 }
