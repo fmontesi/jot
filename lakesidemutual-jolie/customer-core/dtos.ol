@@ -6,7 +6,7 @@ type Address {
 	city:string
 }
 
-type Email:string(regex("^(.+)@(.+)$"))
+type Email:string(regex(".*@.*\\..*"))
 type PhoneNumber:string//(regex(???))
 
 type CustomerProfileUpdateRequest {

@@ -5,14 +5,16 @@ type CustomerCoreParams {
 	location:string
 }
 
-service CustomerCore( /*params:CustomerCoreParams*/ ) {
+service CustomerCore( params:CustomerCoreParams ) {
 
 	embed Console as Console
 	embed StringUtils as StringUtils
 	
 	inputPort Input {
-		location: "socket://localhost:5555"
+		location: params.location
 		protocol: http {
+			// debug = true
+			// debug.showContent = true
 			osc.getCustomer << {
 				template = "/customers/{ids}"
 				method = "get"
@@ -57,21 +59,17 @@ service CustomerCore( /*params:CustomerCoreParams*/ ) {
 		
 
 		[createCustomer(req)(res){
-			res = {
+			res << {
 				customerId = "123"
 				firstName = req.firstName
 				lastName = req.lastName
-				birthday = {
-					seconds = req.birthday.seconds
-					nanos = req.birthday.nanos
-				}
+				birthday = req.birthday
 				streetAddress = req.streetAddress
 				postalCode = req.postalCode
 				city = req.city
 				email = req.email
 				phoneNumber = req.phoneNumber
-				moveHistory {
-				}
+				moveHistory = void
 			}
 		}]
 
