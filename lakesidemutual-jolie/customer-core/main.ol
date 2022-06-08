@@ -1,6 +1,7 @@
 from interfaces import CustomerInformationHolder
 from console import Console
-from string_utils import StringUtils
+from string-utils import StringUtils
+
 type CustomerCoreParams {
 	location:string
 }
