@@ -60,6 +60,7 @@ service ServiceTest {
  outputPort Target{
   location: "socket://localhost:5000"
   protocol: http {
+    // this block is optional??
     osc.createCustomer << {
         template = "/customers"
         method = "post"
@@ -69,8 +70,9 @@ service ServiceTest {
  }
 
  init {
-    testCases[0].name = "testcase1"
+    testCases[0].name = "create customer"
     testCases[0].op = "createCustomer"
+    testCases[0].resourcePath = "/customers"
     testCases[0].request << {
         firstName= "Max"
         lastName="Mustermann"
@@ -104,9 +106,10 @@ service ServiceTest {
         scope(test){
             install( default =>
                 if (testCase.expectedThrow == void){
-                    println@Console( testCase.name + " failed : got " + test.default + ", expected " + testCase.expected )()
-                    // valueToPrettyString@StringUtils(test)(tc)
-                    // println@Console(tc)()
+                    print@Console( testCase.name + " failed : expected " + testCase.expected )()
+
+                    valueToPrettyString@StringUtils(test)(faultPretty)
+                    println@Console("got " + faultPretty)()
                 } else if (test.default == testCase.expectedThrow){
                     println@Console( testCase.name + ": pass :)" )()
                 }
@@ -114,8 +117,7 @@ service ServiceTest {
 
             before@out()()
 
-            createCustomer@Target(testCase.request)(res)
-            // invoke@Reflection({operation=testCase.op, outputPort="Target", data=testCase.request })(res)
+            invoke@Reflection({operation = testCase.op, outputPort = "Target", resourcePath = testCase.resourcePath, data -> testCase.request })(res)
 
             // need deep equality comparison
             if ( res.customerId == testCase.expected.customerId ){
