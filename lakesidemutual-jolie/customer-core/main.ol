@@ -1,4 +1,4 @@
-from interfaces import CustomerInformationHolder
+from .interfaces import CustomerInformationHolder
 from console import Console
 from string-utils import StringUtils
 
@@ -7,10 +7,9 @@ type CustomerCoreParams {
 }
 
 service CustomerCore( params:CustomerCoreParams ) {
-
 	embed Console as Console
 	embed StringUtils as StringUtils
-	
+
 	inputPort Input {
 		location: params.location
 		protocol: http {
