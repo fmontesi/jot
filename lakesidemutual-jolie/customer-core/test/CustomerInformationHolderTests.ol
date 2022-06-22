@@ -9,7 +9,12 @@ type TestParams {
 }
 
 interface MyTestInterface {
-	RequestResponse:
+RequestResponse:
+	///@BeforeAll
+	op1,
+	///@BeforeAll
+	op2,
+
 	///@Test
 	testBlah(void)(void) throws TestFailed(string)
 }
@@ -40,7 +45,6 @@ service Main( params:TestParams ) {
 	inputPort Input {
 		location: "local"
 		interfaces: MyTestInterface
-		aggregates: 
 	}
 
 	main {
