@@ -1,0 +1,71 @@
+plugins {
+    id 'java'
+    id 'java-library'
+}
+
+repositories {
+    mavenCentral()
+    maven { url "https://repo1.maven.org/maven2" }
+}
+
+
+version "0.1" // the current version of the JavaService
+def libDir = file( "lib" ) // the location of the local (as in non-maven-published) dependencies that must be included in the project release
+def releaseDir = file( "release" ) // the folder where we will find the files to publish the releases of the JavaService on JPM
+
+dependencies {
+    implementation fileTree( dir: libDir, include: '*.jar' ) // here we are including the local dependencies
+    implementation 'org.jolie-lang:jolie:1.10.7'
+    implementation 'org.jolie-lang:libjolie:1.10.7'
+    // implementation 'org.jolie-lang:jolie-cli:1.10.7'
+    // use e.g., maven central to get the lines for the other dependencies of this package
+}
+
+compileJava   { // not strictly necessary, but useful to make sure the released JavaService is compliant with its target Jolie versions
+  sourceCompatibility = '11'
+  targetCompatibility = '11'
+}
+
+jar {
+    enabled = true
+      
+    manifest {
+        attributes 'Main-Class': 'jot.JotUtils.JotUtils' // this is the name of the main class that implements the JavaService
+    }
+}
+
+import org.apache.tools.ant.filters.ReplaceTokens
+
+task makeRelease() { // the release task that automates compilation and assembly of the release files 
+    tasks.compileJava.mustRunAfter( clean )
+    dependsOn( clean )
+    dependsOn( build )
+    doLast{
+        copy {
+            from( buildDir.toPath().resolve( "libs" ) ){  // this is the JavaService project jar
+                include "*.jar"
+            }
+            into releaseDir.toPath().resolve( "dist" ) 
+        }
+        copy {
+            from( libDir ){ // these are the local libraries 
+                include "*.jar" 
+            }
+            into releaseDir.toPath().resolve( "dist" )
+        }
+        copy { // these are the other files for the release
+            from( projectDir ){
+                include "jpm.json"
+                include "main.ol" // the main.ol file is the Jolie file that describes the types, interfaces, and services of the JavaService
+                                  // to include more than these files use the `include` command as seen here for the other files
+                include "README.md"
+                filter( ReplaceTokens, tokens: [ VERSION: version ] ) // this is where we replace the token `@VERSION@` with the content of version
+            }
+            into releaseDir
+        }
+    }
+}
+
+clean.doFirst{
+    delete releaseDir
+}

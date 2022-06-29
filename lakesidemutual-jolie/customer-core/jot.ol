@@ -1,37 +1,15 @@
 from file import File
+from reflection import Reflection
+from .jotutils import JotUtils
 
 type Params {
 	testsPath:string
 }
 
-type FindTestOperationsResponse {
-	services* {
-		name:string
-		beforeAll*:string
-		afterAll*:string
-		beforeEach*:string
-		afterEach*:string
-		tests*:string
-	}
-}
-
-interface JotUtilsInterface {
-RequestResponse:
-	findTestOperations(string)(FindTestOperationsResponse)
-}
-
-service JotUtils {
-	inputPort Input {
-		location: "local"
-		interfaces: JotUtilsInterface
-	}
-	foreign java {
-		class: "jot.JotUtils"
-	}
-}
-
 service Jot( params:Params ) {
 	embed File as files
+	embed JotUtils as jotUtils
+	embed Reflection as reflection
 
 	main {
 		list@files( {
@@ -64,7 +42,6 @@ service Jot( params:Params ) {
 			}
 		}
 		// findTestOperations@jotUtils( foundFiles )
-		/// 
 
 		// we now get the names of all services with tests...
 		// we embed these services and we run the tests...
