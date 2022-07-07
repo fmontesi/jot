@@ -12,14 +12,14 @@ interface MyTestInterface {
 RequestResponse:
 	///@BeforeAll
 	op1,
-	///@BeforeAll
+	///@AfterAll
 	op2,
 
 	///@Test
 	testBlah(void)(void) throws TestFailed(string)
 }
 
-service Main( params:TestParams ) {
+service main( params:TestParams ) {
 	embed CustomerCore( params )
 	embed Assertions as assertions
 	embed Console as console
