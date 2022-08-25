@@ -1,6 +1,6 @@
 from .interfaces import CustomerInformationHolder
 from console import Console
-from string-utils import StringUtils
+// from string-utils import StringUtils
 
 type CustomerCoreParams {
 	location:string
@@ -8,7 +8,7 @@ type CustomerCoreParams {
 
 service CustomerCore( params:CustomerCoreParams ) {
 	embed Console as Console
-	embed StringUtils as StringUtils
+	// embed StringUtils as StringUtils
 
 	inputPort Input {
 		location: params.location
@@ -44,12 +44,13 @@ service CustomerCore( params:CustomerCoreParams ) {
 		}]
 
 		[getCustomer(req)(res){
-			valueToPrettyString@StringUtils(req)(prettyReq)
-			println@Console(prettyReq)()
+			// valueToPrettyString@StringUtils(req)(prettyReq)
+			// println@Console(prettyReq)()
 			// query string breakssssss 
 			// res = {
 			// 	customers=void
 			// }
+			nullProcess
 			
 		}]
 

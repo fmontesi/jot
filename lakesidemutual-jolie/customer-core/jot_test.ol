@@ -3,7 +3,6 @@ from console import Console
 from string-utils import StringUtils
 
 service main {
-	embed JotUtils as jotUtils
 	embed Console as Console
 	embed StringUtils as StringUtils
 	main {

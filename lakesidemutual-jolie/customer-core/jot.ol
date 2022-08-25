@@ -1,15 +1,24 @@
 from file import File
 from reflection import Reflection
 from .jotutils import JotUtils
-
+from string_utils import StringUtils
+from console import Console
+from runtime import Runtime
 type Params {
-	testsPath:string
+	testsPath: string
+	params: undefined
 }
 
 service Jot( params:Params ) {
 	embed File as files
 	embed JotUtils as jotUtils
 	embed Reflection as reflection
+	embed StringUtils as stringUtils
+	embed Console as console
+	embed Runtime as runtime
+
+    outputPort Operation {
+    }
 
 	main {
 		list@files( {
@@ -18,25 +27,42 @@ service Jot( params:Params ) {
 			recursive = true
 		} )( foundFiles )
 		for( filepath in foundFiles.result ) {
-			findTestOperations@jotUtils( filepath )( result ) // this should check that @Test-annotated ops are RequestResponse
+			findTestOperations@jotUtils( params.testsPath + "/" + filepath )( result ) // this should check that @Test-annotated ops are RequestResponse
 			for( testServiceInfo in result.services ) {
 				if( #testServiceInfo.tests > 0 ) {
+					testParams = void
+					for (p in params.params._){
+						if (p.name == filepath) {
+							testParams << p.params
+						}
+					}
 					// load the testService in the outputPort testService
+					loadEmbeddedService@runtime( {
+						filepath = params.testsPath + "/" + filepath
+						type = "Jolie"
+						service = result.services.name
+						params << testParams
+					} )( Operation.location )
+
 					for( op in testServiceInfo.beforeAll ) {
-						unsafeInvokeRR@reflection( { operation = op } )()
+						invokeRRUnsafe@reflection( { operation = op, outputPort="Operation" } )()
 					}
 					for( test in testServiceInfo.tests ) {
 						for( beforeEach in testService.beforeEach ) {
-							unsafeInvokeRR@reflection( { operation = beforeEach, data.testName = test } )()
+							invokeRRUnsafe@reflection( { operation = beforeEach, outputPort="Operation" } )()
 						}
-						unsafeInvokeRR@reflection( { operation = test } )()
+						scope(t){
+							install(default => println@console("Test failed on operation: " + test + " error: " + t.default)())
+							invokeRRUnsafe@reflection( { operation = test, outputPort="Operation" } )()
+						}
+
 						for( afterEach in testService.afterEach ) {
-							unsafeInvokeRR@reflection( { operation = afterEach, data.testName = test } )()
+							invokeRRUnsafe@reflection( { operation = afterEach, outputPort="Operation" } )()
 						}
 					}
-					// unsafeInvokeRR@reflection( ... )
+					// invokeRRUnsafe@reflection( ... )
 					for( op in testServiceInfo.afterAll ) {
-						unsafeInvokeRR@reflection( { operation = op } )()
+						invokeRRUnsafe@reflection( { operation = op, outputPort="Operation" } )()
 					}
 				}
 			}

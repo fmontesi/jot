@@ -1,3 +1,9 @@
 {
-	"testsPath": "test"
+	"testsPath": "test",
+	"params": [{
+		"name": "CustomerInformationHolderTests.ol",
+		"params": {
+			"location": "socket://localhost:11112"
+		}
+	}]
 }

@@ -48,20 +48,11 @@ service main( params:TestParams ) {
 	}
 
 	main {
-		[ beforeAll()() {
-			println@console( "beforeAll" )()
+		[ op1()() {
+			println@console( "op1 is called" )()
 		} ]
-
-		[ afterAll()() {
-			println@console( "afterAll" )()
-		} ]
-
-		[ beforeEach( request )() {
-			println@console( "beforeEach " + request.testName )()
-		} ]
-
-		[ afterEach( request )() {
-			println@console( "afterEach " + request.testName )()
+		[ op2()() {
+			println@console( "op2 is called" )()
 		} ]
 
 		[ testBlah()() {
@@ -87,7 +78,7 @@ service main( params:TestParams ) {
 					city = "Rapperswil"
 					email = "max@example.com"
 					phoneNumber = "055 222 41 11"
-					moveHistory = {}
+					moveHistory = void
 				}
 			} )()
 		} ]
