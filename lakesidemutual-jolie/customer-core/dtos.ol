@@ -24,13 +24,14 @@ type CustomerResponse {
 	customerId:string
 	firstName:string
 	lastName:string
-	birthday:Instant
+	// birthday:Instant
+	birthday:string
 	streetAddress:string
 	postalCode:string
 	city:string
 	email:Email
 	phoneNumber:PhoneNumber
-	moveHistory {
+	moveHistory? {
 		address*:Address
 	}
 }
@@ -44,7 +45,7 @@ type PaginatedCustomerResponse {
 	limit:int
 	offset:int
 	size:int
-	customers*:CustomersResponse
+	customers*:CustomerResponse
 }
 
 type CustomerNotFoundExceptionType:string

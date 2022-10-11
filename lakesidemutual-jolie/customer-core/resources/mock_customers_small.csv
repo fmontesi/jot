@@ -1,4 +1,4 @@
-id,first_name,last_name,birthday,street_address,postal_code,city,email,phone_number,password
+customerId,firstName,lastName,birthday,streetAddress,postalCode,city,email,phoneNumber,password
 rgpp0wkpec,Max,Mustermann,1/1/1990,Oberseestrasse 10,8640,Rapperswil,admin@example.com,055 222 4111,1password
 ce4btlyluu,Robbie,Davenhall,8/12/1961,1 Dunning Trail,5630,Muri,rdavenhall0@example.com,055 222 4111,XNEZSl9LkM
 ctkdzorjl0,Rahel,Piletic,1/18/1968,108 Dapin Street,5630,Muri,rpiletic1@example.com,055 222 4111,Qpk7IfAzx

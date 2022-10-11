@@ -1,6 +1,7 @@
 from .interfaces import CustomerInformationHolder
 from console import Console
 // from string-utils import StringUtils
+from .repository import CustomerCoreRepository
 
 type CustomerCoreParams {
 	location:string
@@ -8,6 +9,7 @@ type CustomerCoreParams {
 
 service CustomerCore( params:CustomerCoreParams ) {
 	embed Console as Console
+	embed CustomerCoreRepository as repository
 	// embed StringUtils as StringUtils
 
 	inputPort Input {
@@ -15,6 +17,10 @@ service CustomerCore( params:CustomerCoreParams ) {
 		protocol: http {
 			// debug = true
 			// debug.showContent = true
+			osc.getCustomers << {
+				template = "/customers"
+				method = "get"
+			}
 			osc.getCustomer << {
 				template = "/customers/{ids}"
 				method = "get"
@@ -40,10 +46,20 @@ service CustomerCore( params:CustomerCoreParams ) {
 	main {
 
 		[getCustomers(req)(res){
-			nullProcess
+			findAll@repository(req)(repo)
+			res.filter = "-"
+			res.limit = #repo.result
+			res.offset = 0
+			res.size = #repo.result
+
+            for ( customer in repo.result){
+				undef(customer.password)
+                res.customers[#res.customers] << customer
+            }
 		}]
 
 		[getCustomer(req)(res){
+			
 			// valueToPrettyString@StringUtils(req)(prettyReq)
 			// println@Console(prettyReq)()
 			// query string breakssssss 

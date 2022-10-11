@@ -20,59 +20,42 @@ service CustomerCoreRepository {
     init{
         println@Console("initializing CustomerCoreRepository")()
         readFile@File( {
-            .filename= "/workspaces/jot/lakesidemutual-jolie/customer-core/resources/mock_customers_small.csv"
+            .filename= "./resources/mock_customers_small.csv"
         } )( csvRes )
         split@StringUtils( csvRes {
             .regex="\\R"
         } )( lines )
-        // valueToPrettyString@StringUtils( lines )( prettyLine )
-
-        // println@Console("read result " + prettyLine)()
 
         split@StringUtils( lines.result[ 0 ] {
             .regex=","
         } )( header )
 
         global.customers = undefined
-        global.customers[0].id = 111
         for ( i = 1, i < #lines.result, i++ ) {
-            println@Console( "line[" + i + "] = " + lines.result[i] )()
-
             split@StringUtils( lines.result[i] {
                 .regex=","
             } )( cell )
 
             for ( j = 0, j < #header.result, j++ ) {
-                global.customers[i].(header.result[j]) = cell.result[j]
+                global.customers[i-1].(header.result[j]) = cell.result[j]
             }
-
-            valueToPrettyString@StringUtils( global.customers[i] )( prettyLine )
-            println@Console("prettyLine " + prettyLine)()
-
         }
-
-        println@Console("eee " + global.customers[0].id )()
-
-        valueToPrettyString@StringUtils( global.customers )( prettyLine )
-        println@Console("ee " + prettyLine)()
-
-        // foreach( line : lines.result ){
-        //     println@Console("read result " + line)()
-
-        //     valueToPrettyString@StringUtils( line )( prettyLine )
-        //     println@Console("prettyLine " + prettyLine)()
-        // }
-
     }
 
     main{
 
         [findAll(req)(res){
-            nullProcess // TODO    
+            for ( customer in global.customers){
+                res.result[#res.result] << customer
+            }
         }]
 
         [findAllById(req)(res){
-            nullProcess // TODO
+            for ( customer in global.customers){
+                if (req == customer.customerId){
+                    res.result[#res.result]  << customer
+                }
+            }
         }]
 
         [saveAll(req)(res){
@@ -100,7 +83,11 @@ service CustomerCoreRepository {
         }]
 
         [getById(req)(res){
-            nullProcess // TODO
+            for ( customer in global.customers){
+                if (req == customer.customerId){
+                    res << customer
+                }
+            }
         }]
 
     }

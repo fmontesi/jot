@@ -1,7 +1,6 @@
 from ..interfaces import CustomerInformationHolder
 from ..main import CustomerCore
 from assertions import Assertions
-from jot import TestInterface
 from console import Console
 
 type TestParams {
@@ -10,13 +9,15 @@ type TestParams {
 
 interface MyTestInterface {
 RequestResponse:
-	///@BeforeAll
-	op1,
-	///@AfterAll
-	op2,
+	// ///@BeforeAll
+	// op1,
+	// ///@AfterAll
+	// op2,
 
+	// ///@Test
+	// testBlah(void)(void) throws TestFailed(string),
 	///@Test
-	testBlah(void)(void) throws TestFailed(string)
+	testGetCustomers(void)(void) throws TestFailed(string)
 }
 
 service main( params:TestParams ) {
@@ -33,6 +34,10 @@ service main( params:TestParams ) {
 			// 	template = "/customers/{ids}"
 			// 	method = "get"
 			// }
+			osc.getCustomers << {
+				template = "/customers"
+				method = "get"
+			}
 			osc.createCustomer << {
 				template = "/customers"
 				method = "post"
@@ -48,39 +53,49 @@ service main( params:TestParams ) {
 	}
 
 	main {
-		[ op1()() {
-			println@console( "op1 is called" )()
-		} ]
-		[ op2()() {
-			println@console( "op2 is called" )()
+		// [ op1()() {
+		// 	println@console( "op1 is called" )()
+		// } ]
+		// [ op2()() {
+		// 	println@console( "op2 is called" )()
+		// } ]
+
+		[ testGetCustomers()() {
+			getCustomers@customerCore({filter=""})(response)
+			len = #response.customers
+			equals@assertions( {
+				actual = len
+				expected = 8 // 9
+			})()
+			
 		} ]
 
-		[ testBlah()() {
-			createCustomer@customerCore( {
-				firstName = "Max"
-				lastName = "Mustermann"
-				birthday = 16546
-				streetAddress = "Oberseestrasse 10"
-				postalCode = "8640"
-				city = "Rapperswil"
-				email = "max@example.com"
-				phoneNumber = "055 222 41 11"
-			} )( response )
-			equals@assertions( {
-				actual -> response
-				expected << {
-					customerId = response.customerId
-					firstName = "Mx"
-					lastName = "Mustermann"
-					birthday = 16546
-					streetAddress = "Oberseestrasse 10"
-					postalCode = "8640"
-					city = "Rapperswil"
-					email = "max@example.com"
-					phoneNumber = "055 222 41 11"
-					moveHistory = void
-				}
-			} )()
-		} ]
+		// [ testBlah()() {
+		// 	createCustomer@customerCore( {
+		// 		firstName = "Max"
+		// 		lastName = "Mustermann"
+		// 		birthday = 16546
+		// 		streetAddress = "Oberseestrasse 10"
+		// 		postalCode = "8640"
+		// 		city = "Rapperswil"
+		// 		email = "max@example.com"
+		// 		phoneNumber = "055 222 41 11"
+		// 	} )( response )
+		// 	equals@assertions( {
+		// 		actual -> response
+		// 		expected << {
+		// 			customerId = response.customerId
+		// 			firstName = "Max"
+		// 			lastName = "Mustermann"
+		// 			birthday = 16546
+		// 			streetAddress = "Oberseestrasse 10"
+		// 			postalCode = "8640"
+		// 			city = "Rapperswil"
+		// 			email = "max@example.com"
+		// 			phoneNumber = "055 222 41 11"
+		// 			moveHistory = void
+		// 		}
+		// 	} )()
+		// } ]
 	}
 }
