@@ -1,9 +1,20 @@
 {
-	"testsPath": "test",
-	"params": [{
-		"name": "CustomerInformationHolderTests.ol",
-		"params": {
-			"location": "socket://localhost:11112"
-		}
-	}]
+  "testsPath": "test",
+  "params": [
+    {
+      "name": "CustomerInformationHolderTests.ol",
+      "params": {
+        "location": "socket://localhost:11112",
+        "repository": {
+          "connectionInfo": {
+            "username": "",
+            "password": "",
+            "host": "",
+            "database": "/home/nau/sdu/jot-lakeside/lakesidemutual-jolie/customer-core/resources/db",
+            "driver": "csv"
+          }
+        }
+      }
+    }
+  ]
 }

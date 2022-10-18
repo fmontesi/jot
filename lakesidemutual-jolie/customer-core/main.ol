@@ -1,16 +1,17 @@
 from .interfaces import CustomerInformationHolder
 from console import Console
-// from string-utils import StringUtils
-from .repository import CustomerCoreRepository
+from string-utils import StringUtils
+from .repository import CustomerCoreRepository, RepositoryParams
 
 type CustomerCoreParams {
-	location:string
+	location: string
+	repository: RepositoryParams
 }
 
 service CustomerCore( params:CustomerCoreParams ) {
 	embed Console as Console
-	embed CustomerCoreRepository as repository
-	// embed StringUtils as StringUtils
+	embed CustomerCoreRepository(params.repository) as repository
+	embed StringUtils as StringUtils
 
 	inputPort Input {
 		location: params.location
@@ -59,15 +60,11 @@ service CustomerCore( params:CustomerCoreParams ) {
 		}]
 
 		[getCustomer(req)(res){
-			
-			// valueToPrettyString@StringUtils(req)(prettyReq)
-			// println@Console(prettyReq)()
-			// query string breakssssss 
-			// res = {
-			// 	customers=void
-			// }
-			nullProcess
-			
+			findAllById@repository(req.ids)(repo)
+            for ( customer in repo.result){
+				undef(customer.password)
+                res.customers[#res.customers] << customer
+            }
 		}]
 
 		[updateCustomer(req)(res){

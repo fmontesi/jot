@@ -2,9 +2,14 @@ from ..spring.jparepository import JpaRepository
 from console import Console
 from file import File
 from string_utils import StringUtils
+from database import ConnectionInfo, Database
+
+type RepositoryParams {
+    connectionInfo: ConnectionInfo
+}
 
 // implementation of customer core under jpa repository interface
-service CustomerCoreRepository {
+service CustomerCoreRepository(p : RepositoryParams) {
 
     inputPort ip {
         location: "local"
@@ -14,43 +19,60 @@ service CustomerCoreRepository {
     embed Console as Console
     embed File as File
     embed StringUtils as StringUtils
+    embed Database as Database
 
     execution: concurrent
 
-    init{
+    init {
         println@Console("initializing CustomerCoreRepository")()
-        readFile@File( {
-            .filename= "./resources/mock_customers_small.csv"
-        } )( csvRes )
-        split@StringUtils( csvRes {
-            .regex="\\R"
-        } )( lines )
-
-        split@StringUtils( lines.result[ 0 ] {
-            .regex=","
-        } )( header )
-
-        global.customers = undefined
-        for ( i = 1, i < #lines.result, i++ ) {
-            split@StringUtils( lines.result[i] {
-                .regex=","
-            } )( cell )
-
-            for ( j = 0, j < #header.result, j++ ) {
-                global.customers[i-1].(header.result[j]) = cell.result[j]
-            }
-        }
+        connect@Database( p.connectionInfo )( void )
+        checkConnection@Database()()
+        println@Console("connection success")()
+        
     }
 
     main{
 
         [findAll(req)(res){
-            for ( customer in global.customers){
-                res.result[#res.result] << customer
+	        queryRequest =
+	            "SELECT * FROM customers;";
+	        query@Database( queryRequest )( queryResponse );
+            for ( customerRaw in queryResponse.row){
+                res.result[#res.result] << {
+                    birthday = customerRaw.birthday
+                    firstName = customerRaw.firstName
+                    lastName = customerRaw.lastName
+                    password = customerRaw.password
+                    phoneNumber = customerRaw.phoneNumber
+                    streetAddress = customerRaw.streetAddress
+                    city = customerRaw.city
+                    postalCode = customerRaw.postalCode
+                    customerId = customerRaw.customerId
+                    email = customerRaw.email
+                }
             }
         }]
 
         [findAllById(req)(res){
+	        queryRequest =
+	            "SELECT * FROM customers WHERE customerId = :customerId;";
+            queryRequest.customerId= req
+	        query@Database( queryRequest )( queryResponse );
+            for ( customerRaw in queryResponse.row){
+                res.result[#res.result] << {
+                    birthday = customerRaw.birthday
+                    firstName = customerRaw.firstName
+                    lastName = customerRaw.lastName
+                    password = customerRaw.password
+                    phoneNumber = customerRaw.phoneNumber
+                    streetAddress = customerRaw.streetAddress
+                    city = customerRaw.city
+                    postalCode = customerRaw.postalCode
+                    customerId = customerRaw.customerId
+                    email = customerRaw.email
+                }
+            }
+
             for ( customer in global.customers){
                 if (req == customer.customerId){
                     res.result[#res.result]  << customer

@@ -1,11 +1,9 @@
 from ..interfaces import CustomerInformationHolder
-from ..main import CustomerCore
+from ..main import CustomerCore, CustomerCoreParams
 from assertions import Assertions
 from console import Console
 
-type TestParams {
-	location:string
-}
+type TestParams: CustomerCoreParams
 
 interface MyTestInterface {
 RequestResponse:
@@ -16,8 +14,10 @@ RequestResponse:
 
 	// ///@Test
 	// testBlah(void)(void) throws TestFailed(string),
-	///@Test
-	testGetCustomers(void)(void) throws TestFailed(string)
+	/// @Test
+	testGetCustomers(void)(void) throws TestFailed(string),
+	/// @Test
+	testGetCustomer(void)(void) throws TestFailed(string)
 }
 
 service main( params:TestParams ) {
@@ -30,10 +30,10 @@ service main( params:TestParams ) {
 	outputPort customerCore {
 		location: params.location
 		protocol: http {
-			// osc.getCustomer << {
-			// 	template = "/customers/{ids}"
-			// 	method = "get"
-			// }
+			osc.getCustomer << {
+				template = "/customers/{ids}"
+				method = "get"
+			}
 			osc.getCustomers << {
 				template = "/customers"
 				method = "get"
@@ -60,12 +60,21 @@ service main( params:TestParams ) {
 		// 	println@console( "op2 is called" )()
 		// } ]
 
+		[ testGetCustomer()() {
+			getCustomer@customerCore({ids= "zbej74yalh"})(response)
+			equals@assertions( {
+				actual = response.customerId
+				expected = "zbej74yalh"
+			})()
+		} ]
+
 		[ testGetCustomers()() {
 			getCustomers@customerCore({filter=""})(response)
 			len = #response.customers
 			equals@assertions( {
 				actual = len
-				expected = 8 // 9
+				expected = 9
+				// expected = 8
 			})()
 			
 		} ]
