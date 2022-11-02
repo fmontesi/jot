@@ -1,9 +1,7 @@
 {
   "testsPath": "test",
-  "params": [
-    {
-      "name": "CustomerInformationHolderTests.ol",
-      "params": {
+  "params": {
+    "CustomerInformationHolderTests.ol": {
         "location": "socket://localhost:11112",
         "repository": {
           "connectionInfo": {
@@ -16,5 +14,4 @@
         }
       }
     }
-  ]
 }
