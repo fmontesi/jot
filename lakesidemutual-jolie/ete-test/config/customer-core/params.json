@@ -1,0 +1,12 @@
+{
+	"location": "socket://localhost:8080",
+	"repository": {
+		"connectionInfo": {
+			"username": "",
+			"password": "",
+			"host": "",
+			"database": "/db",
+			"driver": "csv"
+		}
+	}
+}

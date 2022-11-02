@@ -1,0 +1,21 @@
+services:
+  customer-core:
+    build:
+      context: ../customer-core
+    volumes:
+      - ./config/customer-core:/config
+
+  customer-management:
+    build:
+      context: ../customer-management
+    depends_on:
+      - customer-core
+    volumes:
+      - ./config/customer-management:/config
+      - ../customer-core:/app/packages/customer-core
+
+  # test:
+  #   build:
+  #     context: ./test
+  #   depends_on:
+  #     - customer-management
