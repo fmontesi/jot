@@ -12,15 +12,14 @@
     "test": "jot jot.json"
   },
   "jolie": {
-    "dependencies": {
-      "@jolie/jot": "0.0.9"
-    },
     "maven": {
-      "dependencies": {},
+      "dependencies": {
+        "org.xerial:sqlite-jdbc": "3.39.3.0"
+      },
       "indirectDependencies": {}
     }
   },
   "dependencies": {
-    "@jolie/jot": "^0.0.9"
+    "@jolie/jot": "^0.0.12"
   }
 }

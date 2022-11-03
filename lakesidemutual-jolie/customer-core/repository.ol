@@ -1,4 +1,4 @@
-from ..spring.jparepository import JpaRepository
+from spring.jparepository import JpaRepository
 from console import Console
 from file import File
 from string_utils import StringUtils

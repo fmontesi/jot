@@ -8,8 +8,8 @@
             "username": "",
             "password": "",
             "host": "",
-            "database": "/home/nau/sdu/jot-lakeside/lakesidemutual-jolie/customer-core/resources/db",
-            "driver": "csv"
+            "database": "resources/db/db.db",
+            "driver": "sqlite"
           }
         }
       }
