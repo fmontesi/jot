@@ -2,3 +2,4 @@ node_modules/
 lib/
 packages
 !lakesidemutual-jolie/customer-core/packages/
+!lakesidemutual-jolie/ete-test/test/packages/
