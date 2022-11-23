@@ -21,6 +21,9 @@
     "maven": {
       "dependencies": {},
       "indirectDependencies": {}
+    },
+    "dependencies": {
+      "customer-core": "../../customer-core"
     }
   },
   "dependencies": {
