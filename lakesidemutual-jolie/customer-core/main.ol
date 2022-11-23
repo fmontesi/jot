@@ -53,7 +53,7 @@ service CustomerCore( params:CustomerCoreParams ) {
 			res.offset = 0
 			res.size = #repo.result
 
-            for ( customer in repo.result){
+            for( customer in repo.result ) {
 				undef(customer.password)
                 res.customers[#res.customers] << customer
             }

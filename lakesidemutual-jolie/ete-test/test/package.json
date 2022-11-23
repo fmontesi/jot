@@ -1,0 +1,29 @@
+{
+  "name": "test",
+  "version": "0.1.0",
+  "description": "",
+  "main": "SomeTest.ol",
+  "test": "echo \"Error: no test specified\" && exit 1",
+  "repo": "",
+  "keywords": [],
+  "author": "fmontesi",
+  "license": "ISC",
+  "dockerfile": false,
+  "devcontainer": true,
+  "scripts": {
+    "watch": "nodemon jolie SomeTest.ol",
+    "test": "jot jot.json"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.19"
+  },
+  "jolie": {
+    "maven": {
+      "dependencies": {},
+      "indirectDependencies": {}
+    }
+  },
+  "dependencies": {
+    "@jolie/jot": "^0.0.12"
+  }
+}

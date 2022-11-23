@@ -1,24 +1,26 @@
-from ..interfaces import CustomerInformationHolder
-from ..main import CustomerCore, CustomerCoreParams
+from customer-core.interfaces import CustomerInformationHolder as CustomerInformationHolder_CustomerCore
+from customer-management.interfaces import CustomerInformationHolder as CustomerInformationHolder_CustomerManagement
 from assertions import Assertions
 from console import Console
-
-type TestParams: CustomerCoreParams
+from string-utils import StringUtils
 
 interface MyTestInterface {
 RequestResponse:
-	/// @Test
+	///@BeforeAll
+	setup(void)(void) throws TestFailed(string),
+	///@Test
 	testGetCustomer(void)(void) throws TestFailed(string)
 }
 
-service main( params:TestParams ) {
+service Main {
 	embed Assertions as assertions
 	embed Console as console
+	embed StringUtils as su
 
 	execution: sequential
 
 	outputPort customerCore {
-		location: params.location
+		location: "socket://customer-core:8080"
 		protocol: http {
 			osc.getCustomer << {
 				template = "/customers/{ids}"
@@ -34,18 +36,18 @@ service main( params:TestParams ) {
 			}
 			format = "json"
 		}
-		interfaces: CustomerInformationHolder
+		interfaces: CustomerInformationHolder_CustomerCore
 	}
 
 	outputPort customerManagement {
-		location: params.location
+		location: "socket://customer-management:8080"
 		protocol: http {
 			osc.getCustomer << {
 				template = "/customers/{ids}"
 				method = "get"
 			}
 		}
-		interfaces: CustomerInformationHolder
+		interfaces: CustomerInformationHolder_CustomerManagement
 	}
 
 	inputPort Input {
@@ -54,14 +56,22 @@ service main( params:TestParams ) {
 	}
 
 	main {
+		[ setup()() {
+			println@console("Setup")()
+		} ]
+
 		[ testGetCustomer()() {
+			println@console("testGetCustomer")()
 			request.ids[0] = "zbej74yalh"
+			println@console("1")()
 			getCustomer@customerCore( request )( responseFromCustomerCore )
+			println@console("2")()
 			getCustomer@customerManagement( request )( responseFromCustomerManagement )
 			equals@assertions( {
 				actual << responseFromCustomerCore
 				expected << responseFromCustomerManagement
-			})()
+			} )()
+			println@console( valueToPrettyString@su( responseFromCustomerCore ) )()
 		} ]
 	}
 }
