@@ -10,4 +10,5 @@ FROM jolielang/jolie:edge
 WORKDIR /app
 COPY --from=Build /app .
 
-CMD ["jolie", "--params", "/config/params.json", "main.ol"]
+# CMD ["jolie", "--params", "/config/params.json", "main.ol"]
+CMD ["jolie", "main.ol"]

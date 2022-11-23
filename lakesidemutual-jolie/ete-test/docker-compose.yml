@@ -16,8 +16,8 @@ services:
       - ./config/customer-management:/config
       - ../customer-core:/app/packages/customer-core
 
-  # test:
-  #   build:
-  #     context: ./test
-  #   depends_on:
-  #     - customer-management
+  test:
+    build:
+      context: ./test
+    depends_on:
+      - customer-management
