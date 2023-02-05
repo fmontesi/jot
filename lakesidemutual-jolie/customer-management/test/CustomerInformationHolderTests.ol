@@ -1,49 +1,39 @@
 from ..interfaces import CustomerInformationHolder
-from ..main import CustomerCore, CustomerCoreParams
+from ..main import CustomerManagement, CustomerManagementParams
 from assertions import Assertions
 from console import Console
 
-type TestParams: CustomerCoreParams
+type TestParams: CustomerManagementParams
 
 interface MyTestInterface {
 RequestResponse:
-	/// @BeforeAll
-	op1,
-	/// @AfterAll
-	op2,
-
-	/// @Test
-	testGetCustomers(void)(void) throws TestFailed(string),
-	/// @Test
+	// /// @Test
 	testGetCustomer(void)(void) throws TestFailed(string),
 	/// @Test
+	testGetCustomerNotFound(void)(void) throws TestFailed(string),
+	// /// @Test
 	testUpdateCustomer(void)(void) throws TestFailed(string),
-	/// @Test
-	testUpdateAddressCustomer(void)(void) throws TestFailed(string)
 }
 
-service TestCustomerCore( params:TestParams ) {
+service TestCustomerManagement( params:TestParams ) {
 
-	embed CustomerCore( params )
+	embed CustomerManagement( params )
 	embed Assertions as assertions
 	embed Console as console
 
 	execution: sequential
 
-	outputPort customerCore {
+	outputPort CustomerManagement {
 		location: params.location
 		protocol: http {
 			osc.getCustomer << {
 				template = "/customers/{ids}"
 				method = "get"
+				statusCodes.CustomerNotFound = 404
 			}
-			osc.getCustomers << {
-				template = "/customers"
-				method = "get"
-			}
-			osc.createCustomer << {
-				template = "/customers"
-				method = "post"
+			osc.updateCustomer << {
+				template = "/customers/{customerId}"
+				method = "put"
 			}
 			format = "json"
 		}
@@ -56,35 +46,26 @@ service TestCustomerCore( params:TestParams ) {
 	}
 
 	main {
-		[ op1()() {
-			nullProcess
-			// println@console( "op1 is called" )()
-		} ]
-		[ op2()() {
-			nullProcess
-			// println@console( "op2 is called" )()
-		} ]
-
 		[ testGetCustomer()() {
-			getCustomer@customerCore({ids= "zbej74yalh"})(response)
+			getCustomer@CustomerManagement({ids= "zbej74yalh"})(response)
 			equals@assertions( {
 				actual = response.customerId
 				expected = "zbej74yalh"
 			})()
 		} ]
 
-		[ testGetCustomers()() {
-			getCustomers@customerCore({filter=""})(response)
-			len = #response.customers
-			equals@assertions( {
-				actual = len
-				// expected = 9
-				expected = 8
-			})()
+		[ testGetCustomerNotFound()() {
+			scope ( test ){
+				install( CustomerNotFound => nullProcess)
+				getCustomer@CustomerManagement({ids= "smt"})(response)
+				if ( is_defined(response) ){
+					throw(TestFailed, "expect CustomerNotFound")
+				}
+			}
 		} ]
 
 		[ testUpdateCustomer()() {
-			updateCustomer@customerCore({
+			updateCustomer@CustomerManagement({
 				customerId = "rgpp0wkpec"
 				requestDto << {
 					firstName = "Dane"
@@ -109,25 +90,6 @@ service TestCustomerCore( params:TestParams ) {
 					postalCode = "postalccc"
 					customerId = "rgpp0wkpec"
 					email = "a@a.com"
-				}
-			})()
-		} ]
-
-		[ testUpdateAddressCustomer()() {
-			changeAddress@customerCore({
-				customerId = "rgpp0wkpec"
-				requestDto << {
-					streetAddress = "Some street"
-					postalCode = "postalccc"
-					city = "Some City"
-				}
-			})(actual)
-			equals@assertions( {
-				actual = actual
-				expected = {
-					streetAddress = "Some street"
-					postalCode = "postalccc"
-					city = "Some City"
 				}
 			})()
 		} ]

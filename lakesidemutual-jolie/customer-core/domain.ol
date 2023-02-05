@@ -1,4 +1,4 @@
-from .time import Instant
+// from .time import Instant
 
 ///@ValueObject
 type Address {
@@ -20,7 +20,8 @@ RequestResponse:
 type CustomerProfile {
 	firstName:string
 	lastName:string
-	birthday:Instant
+	// birthday:Instant
+	birthday:string
 	currentAddress:Address
 	email:string
 	phoneNumber:string
@@ -78,7 +79,7 @@ type Pair {
 }
 
 type MultiMap {
-	entries: Pair
+	entries* : Pair
 }
 
 type city: string

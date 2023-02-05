@@ -1,18 +1,28 @@
-from customer-core.interfaces import CustomerInformationHolder as CustomerCoreCustomerInformationHolder
+from ..customer-core.interfaces import CustomerInformationHolder as CustomerCoreCustomerInformationHolder
 from .interfaces import CustomerInformationHolder 
+from console import Console
+from string-utils import StringUtils
 
-type Params {
+type CustomerManagementParams {
 	location: string
 	customerCoreLocation: string
 }
 
-service CustomerManagement( params: Params ) {
+service CustomerManagement( params: CustomerManagementParams ) {
+
+	embed Console as console
+	embed StringUtils as stringUtils
+
 	outputPort customerCore {
 		location: params.customerCoreLocation
 		protocol: http {
 			osc.getCustomer << {
 				template = "/customers/{ids}"
 				method = "get"
+			}
+			osc.updateCustomer << {
+				template = "/customers/{customerId}"
+				method = "put"
 			}
 		}
 		interfaces: CustomerCoreCustomerInformationHolder
@@ -24,6 +34,11 @@ service CustomerManagement( params: Params ) {
 			osc.getCustomer << {
 				template = "/customers/{ids}"
 				method = "get"
+           		statusCodes.CustomerNotFound = 404
+			}
+			osc.updateCustomer << {
+				template = "/customers/{customerId}"
+				method = "put"
 			}
 		}
 		interfaces: CustomerInformationHolder
@@ -31,7 +46,17 @@ service CustomerManagement( params: Params ) {
 
 	main {
 		getCustomer( request )( response ) {
-			getCustomer@customerCore( request )( response )
+			scope ( getCustomer ){
+				getCustomer@customerCore( request )( customerCoreResponse )
+				if (#customerCoreResponse.customers > 0 && customerCoreResponse.customers.customerId != ""){
+					response << customerCoreResponse.customers[0]
+				} else {
+					throw( CustomerNotFound )
+				}
+			}
+		}
+		updateCustomer( request )( response ) {
+			updateCustomer@customerCore( request )( response )
 		}
 	}
 }

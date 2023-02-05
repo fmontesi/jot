@@ -1,4 +1,4 @@
-from .time import Instant
+// from .time import Instant
 
 type Address {
 	streetAddress:string
@@ -12,7 +12,8 @@ type PhoneNumber:string//(regex(???))
 type CustomerProfileUpdateRequest {
 	firstName:string
 	lastName:string
-	birthday:Instant
+	// birthday:Instant
+	birthday:string
 	streetAddress:string
 	postalCode:string
 	city:string
@@ -21,16 +22,15 @@ type CustomerProfileUpdateRequest {
 }
 
 type CustomerResponse {
-	customerId:string
-	firstName:string
-	lastName:string
-	// birthday:Instant
-	birthday:string
-	streetAddress:string
-	postalCode:string
-	city:string
-	email:Email
-	phoneNumber:PhoneNumber
+	customerId? :string
+	firstName? :string
+	lastName? :string
+	birthday? :string
+	streetAddress? :string
+	postalCode? :string
+	city? :string
+	email? :Email
+	phoneNumber? :PhoneNumber
 	moveHistory? {
 		address*:Address
 	}

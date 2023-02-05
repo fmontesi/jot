@@ -1,6 +1,5 @@
 from spring.jparepository import JpaRepository
 from console import Console
-from file import File
 from string_utils import StringUtils
 from database import ConnectionInfo, Database
 
@@ -16,19 +15,17 @@ service CustomerCoreRepository(p : RepositoryParams) {
         interfaces: JpaRepository
     }
 
-    embed Console as Console
-    embed File as File
-    embed StringUtils as StringUtils
-    embed Database as Database
+    embed Console as console
+    embed StringUtils as stringUtils
+    embed Database as database
 
     execution: concurrent
 
     init {
-        println@Console("initializing CustomerCoreRepository")()
-        connect@Database( p.connectionInfo )( void )
-        checkConnection@Database()()
-        println@Console("connection success")()
-        
+        // println@Console("initializing CustomerCoreRepository")()
+        connect@database( p.connectionInfo )( void )
+        checkConnection@database()()
+        println@console("connection success")()
     }
 
     main{
@@ -36,7 +33,7 @@ service CustomerCoreRepository(p : RepositoryParams) {
         [findAll(req)(res){
 	        queryRequest =
 	            "SELECT * FROM customers;";
-	        query@Database( queryRequest )( queryResponse );
+	        query@database( queryRequest )( queryResponse )
             for ( customerRaw in queryResponse.row){
                 res.result[#res.result] << {
                     birthday = customerRaw.birthday
@@ -56,9 +53,9 @@ service CustomerCoreRepository(p : RepositoryParams) {
         [findAllById(req)(res){
 	        queryRequest =
 	            "SELECT * FROM customers WHERE customerId = :customerId;";
-            queryRequest.customerId= req
-	        query@Database( queryRequest )( queryResponse );
-            for ( customerRaw in queryResponse.row){
+            queryRequest.customerId = req
+	        query@database( queryRequest )( queryResponse )
+            for ( customerRaw in queryResponse.row ) {
                 res.result[#res.result] << {
                     birthday = customerRaw.birthday
                     firstName = customerRaw.firstName
@@ -81,15 +78,28 @@ service CustomerCoreRepository(p : RepositoryParams) {
         }]
 
         [saveAll(req)(res){
-            nullProcess // TODO
+            nullProcess
         }]
 
         [flush(req)(res){
             nullProcess // TODO
         }]
 
-        [saveAndFlush(req)(res){
-            nullProcess // TODO
+        [saveAndFlush(req)(res) {
+
+	        queryRequest =
+	            "UPDATE customers SET firstName = :firstName, lastName = :lastName, birthday = :birthday, streetAddress = :streetAddress, postalCode = :postalCode, city = :city, email = :email, phoneNumber = :phoneNumber WHERE customerId = :customerId RETURNING *;";
+            queryRequest.firstName = req.firstName
+            queryRequest.lastName = req.lastName
+            queryRequest.birthday = req.birthday
+            queryRequest.streetAddress = req.streetAddress
+            queryRequest.postalCode = req.postalCode
+            queryRequest.city = req.city
+            queryRequest.email = req.email
+            queryRequest.phoneNumber = req.phoneNumber
+            queryRequest.customerId = req.customerId
+
+	        query@database( queryRequest )( res )
         }]
 
         [saveAllAndFlush(req)(res){

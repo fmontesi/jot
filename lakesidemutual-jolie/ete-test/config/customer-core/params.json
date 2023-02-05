@@ -8,5 +8,8 @@
 		  "database": "resources/db/db.db",
 		  "driver": "sqlite"
 		}
+	},
+	"cityLookupService": {
+	  "csvLocation": "resources/db/cities_by_postalcode_switzerland.csv"
 	}
 }

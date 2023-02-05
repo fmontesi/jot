@@ -1,4 +1,4 @@
-from .dtos import CitiesResponse, PaginatedCustomerResponse, CustomersResponse, CustomerProfileUpdateRequest, CustomerResponse
+from .dtos import CitiesResponse, PaginatedCustomerResponse, CustomersResponse, CustomerProfileUpdateRequest, CustomerResponse, Address
 from .domain import CustomerId
 interface CityReferenceDataHolder {
 RequestResponse:
@@ -22,11 +22,25 @@ type UpdateCustomerRequest {
 	requestDto:CustomerProfileUpdateRequest
 }
 
+type GetCitiesForPostalCodeRequest{
+	postalCode: string
+}
+
+type GetCitiesForPostalCodeResponse{
+	cities*: string
+}
+
+type ChangeAddressRequest{
+	customerId:CustomerId
+	requestDto:Address
+}
+
 interface CustomerInformationHolder {
 RequestResponse:
 	getCustomers(GetCustomersRequest)(PaginatedCustomerResponse),
-	getCustomer(GetCustomerRequest)(CustomersResponse),
+	getCustomer(GetCustomerRequest)(CustomersResponse) throws CustomerNotFound,
 	updateCustomer(UpdateCustomerRequest)(CustomerResponse),
-	createCustomer(CustomerProfileUpdateRequest)(CustomerResponse) //< mimick lakeside muntual for CustomerProfileUpdateRequest.
-	// changeAddress,
+	createCustomer(CustomerProfileUpdateRequest)(CustomerResponse),
+	changeAddress(ChangeAddressRequest)(Address),
+	getCitiesForPostalCode(GetCitiesForPostalCodeRequest)(GetCitiesForPostalCodeResponse)
 }

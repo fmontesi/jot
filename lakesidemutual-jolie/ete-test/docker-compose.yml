@@ -21,3 +21,5 @@ services:
       context: ./test
     depends_on:
       - customer-management
+    volumes:
+      - ../customer-core:/customer-core

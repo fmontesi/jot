@@ -56,9 +56,9 @@ service Main {
 	}
 
 	main {
-		[ setup()() {
-			println@console("Setup")()
-		} ]
+		// [ setup()() {
+		// 	println@console("Setup")()
+		// } ]
 
 		[ testGetCustomer()() {
 			println@console("testGetCustomer")()

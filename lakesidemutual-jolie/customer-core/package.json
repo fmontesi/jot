@@ -9,7 +9,8 @@
   "author": "nau",
   "license": "ISC",
   "scripts": {
-    "test": "jot jot.json"
+    "test": "jot test/jot.json",
+    "start": "jolie --params params.json main.ol"
   },
   "jolie": {
     "maven": {
@@ -20,6 +21,6 @@
     }
   },
   "dependencies": {
-    "@jolie/jot": "^0.0.12"
+    "@jolie/jot": "0.0.15"
   }
 }
