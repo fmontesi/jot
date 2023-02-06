@@ -56,22 +56,18 @@ service Main {
 	}
 
 	main {
-		// [ setup()() {
-		// 	println@console("Setup")()
-		// } ]
+		[ setup()() {
+			nullProcess
+		} ]
 
 		[ testGetCustomer()() {
-			println@console("testGetCustomer")()
 			request.ids[0] = "zbej74yalh"
-			println@console("1")()
 			getCustomer@customerCore( request )( responseFromCustomerCore )
-			println@console("2")()
 			getCustomer@customerManagement( request )( responseFromCustomerManagement )
 			equals@assertions( {
-				actual << responseFromCustomerCore
-				expected << responseFromCustomerManagement
+				actual << responseFromCustomerCore.customers[0].customerId
+				expected << responseFromCustomerManagement.customerId
 			} )()
-			println@console( valueToPrettyString@su( responseFromCustomerCore ) )()
 		} ]
 	}
 }

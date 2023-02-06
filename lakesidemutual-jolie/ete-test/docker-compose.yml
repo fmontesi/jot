@@ -7,7 +7,8 @@ services:
 
   customer-management:
     build:
-      context: ../customer-management
+      context: ..
+      dockerfile: customer-management/Dockerfile
     depends_on:
       - customer-core
     ports:
@@ -18,8 +19,8 @@ services:
 
   test:
     build:
-      context: ./test
+      context: ..
+      dockerfile: ete-test/test/Dockerfile
     depends_on:
       - customer-management
-    volumes:
-      - ../customer-core:/customer-core
+    # command: tail -f /dev/null

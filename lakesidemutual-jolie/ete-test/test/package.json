@@ -8,14 +8,8 @@
   "keywords": [],
   "author": "fmontesi",
   "license": "ISC",
-  "dockerfile": false,
-  "devcontainer": true,
   "scripts": {
-    "watch": "nodemon jolie SomeTest.ol",
     "test": "jot jot.json"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.19"
   },
   "jolie": {
     "maven": {
@@ -23,7 +17,9 @@
       "indirectDependencies": {}
     },
     "dependencies": {
-      "customer-core": "../../customer-core"
+      "customer-core": "../../customer-core",
+      "customer-management": "../../customer-management",
+      "assertions": "../../assertions"
     }
   },
   "dependencies": {

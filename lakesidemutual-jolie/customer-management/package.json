@@ -14,7 +14,9 @@
   "author": "",
   "license": "ISC",
   "jolie": {
-    "dependencies": {},
+    "dependencies": {
+      "customer-core": "../customer-core"
+    },
     "maven": {
       "dependencies": {},
       "indirectDependencies": {}
