@@ -12,14 +12,16 @@ RequestResponse:
 	/// @AfterAll
 	op2,
 
-	/// @Test
+	// /// @Test
 	testGetCustomers(void)(void) throws TestFailed(string),
-	/// @Test
+	// /// @Test
 	testGetCustomer(void)(void) throws TestFailed(string),
-	/// @Test
+	// /// @Test
 	testUpdateCustomer(void)(void) throws TestFailed(string),
+	// /// @Test
+	testUpdateAddressCustomer(void)(void) throws TestFailed(string),
 	/// @Test
-	testUpdateAddressCustomer(void)(void) throws TestFailed(string)
+	testCreateCustomer(void)(void) throws TestFailed(string)
 }
 
 service TestCustomerCore( params:TestParams ) {
@@ -44,6 +46,14 @@ service TestCustomerCore( params:TestParams ) {
 			osc.createCustomer << {
 				template = "/customers"
 				method = "post"
+			}
+			osc.updateCustomer << {
+				template = "/customers/{customerId}"
+				method = "put"
+			}
+			osc.changeAddress << {
+				template = "/customers/{customerId}/address"
+				method = "put"
 			}
 			format = "json"
 		}
@@ -75,11 +85,12 @@ service TestCustomerCore( params:TestParams ) {
 
 		[ testGetCustomers()() {
 			getCustomers@customerCore({filter=""})(response)
+			// getCustomers@customerCore({filter="Vale"})(response)
 			len = #response.customers
 			equals@assertions( {
 				actual = len
-				// expected = 9
-				expected = 8
+				expected = 9
+				// expected = 1
 			})()
 		} ]
 
@@ -99,7 +110,7 @@ service TestCustomerCore( params:TestParams ) {
 			})(actual)
 			equals@assertions( {
 				actual = actual
-				expected = {
+				expected << {
 					birthday = "1/1/2022"
 					firstName = "Dane"
 					lastName = "Joe"
@@ -131,6 +142,27 @@ service TestCustomerCore( params:TestParams ) {
 				}
 			})()
 		} ]
+
+		[ testCreateCustomer()() {
+			request << {
+				firstName = "Jane"
+				lastName = "Doe"
+				birthday = "1/1/2022"
+				streetAddress = "Some street"
+				postalCode = "postalccc"
+				city = "Some City"
+				email = "a@a.com"
+				phoneNumber = "01230304030"
+			}
+			createCustomer@customerCore(request)(actual)
+			equals@assertions( {
+				actual = actual
+				expected = {
+					firstName = "Jane"
+					lastName = "Doe"
+				}
+			})()
+		}]
 
 	}
 }

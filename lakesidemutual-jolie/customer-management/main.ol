@@ -12,12 +12,17 @@ service CustomerManagement( params: CustomerManagementParams ) {
 
 	embed Console as console
 	embed StringUtils as stringUtils
+	execution: concurrent
 
 	outputPort customerCore {
 		location: params.customerCoreLocation
 		protocol: http {
 			osc.getCustomer << {
 				template = "/customers/{ids}"
+				method = "get"
+			}
+			osc.getCustomers << {
+				template = "/customers"
 				method = "get"
 			}
 			osc.updateCustomer << {
@@ -36,6 +41,10 @@ service CustomerManagement( params: CustomerManagementParams ) {
 				method = "get"
            		statusCodes.CustomerNotFound = 404
 			}
+			osc.getCustomers << {
+				template = "/customers"
+				method = "get"
+			}
 			osc.updateCustomer << {
 				template = "/customers/{customerId}"
 				method = "put"
@@ -45,7 +54,7 @@ service CustomerManagement( params: CustomerManagementParams ) {
 	}
 
 	main {
-		getCustomer( request )( response ) {
+		[getCustomer( request )( response ) {
 			scope ( getCustomer ){
 				getCustomer@customerCore( request )( customerCoreResponse )
 				if (#customerCoreResponse.customers > 0 && customerCoreResponse.customers.customerId != ""){
@@ -54,9 +63,12 @@ service CustomerManagement( params: CustomerManagementParams ) {
 					throw( CustomerNotFound )
 				}
 			}
-		}
-		updateCustomer( request )( response ) {
+		}]
+		[getCustomers( request )( response ) {
+			getCustomers@customerCore( request )( response )
+		}]
+		[updateCustomer( request )( response ) {
 			updateCustomer@customerCore( request )( response )
-		}
+		}]
 	}
 }

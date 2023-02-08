@@ -3,6 +3,7 @@ from console import Console
 from string-utils import StringUtils
 from .repository import CustomerCoreRepository, RepositoryParams
 from .city import CityLookupService, CityLookupServiceParams
+
 type CustomerCoreParams {
 	location: string
 	repository: RepositoryParams
@@ -58,15 +59,50 @@ service CustomerCore( params:CustomerCoreParams ) {
 
 		[getCustomers(req)(res){
 			findAll@repository(req)(repo)
-			res.filter = "-"
-			res.limit = #repo.result
-			res.offset = 0
-			res.size = #repo.result
+			if ( !is_defined(req.filter) || req.filter == "" ){
+				res.filter = "-"
+			} else {
+				res.filter = req.filter
+			}
+			if (!is_defined(req.limit)){
+				res.limit = 10
+			}else{
+				res.limit = req.limit
+			}
+			if (!is_defined(req.offset)){
+				res.offset = 0
+			}else{
+				res.offset = req.offset
+			}
+			searchTerms << split@stringUtils(req.filter { regex = " "})
+			// println@console( "searchTerms "+valueToPrettyString@stringUtils( searchTerms ))()
 
+			filteredCustomer.result << s // create empty array
             for( customer in repo.result ) {
-				undef(customer.password)
-                res.customers[#res.customers] << customer
+				// println@console( "customer "+valueToPrettyString@stringUtils( customer ))()
+				if (#searchTerms.result > 0){
+					for ( searchTerm in searchTerms.result ){
+						// println@console( "searchTerm "+valueToPrettyString@stringUtils( searchTerm ))()
+						if (contains@stringUtils(customer.firstName { substring = searchTerm }) || contains@stringUtils(customer.lastName { substring = searchTerm }) ) {
+							// println@console( "Assign customer")()
+							undef(customer.password)
+							filteredCustomer.result[#filteredCustomer.result] << customer
+						}
+					}
+				} else {
+					undef(customer.password)
+					filteredCustomer.result[#filteredCustomer.result] << customer
+				}
             }
+			// println@console( "filteredCustomer.result "+valueToPrettyString@stringUtils( filteredCustomer ))()
+			res.size = #filteredCustomer.result
+			for ( i = res.offset, i < limit || i < #filteredCustomer.result, i++ ){
+				res.customers[#res.customers] << filteredCustomer.result[i]
+			}
+			if ( !is_defined(res.customers) ){
+				res.customers << s // create empty array
+			}
+			// println@console( "res "+valueToPrettyString@stringUtils( res ))()
 		}]
 
 		[getCustomer(req)(res){
@@ -119,8 +155,8 @@ service CustomerCore( params:CustomerCoreParams ) {
 		
 
 		[createCustomer(req)(res){
-			res << {
-				customerId = "123"
+			insert << {
+				customerId = getRandomUUID@stringUtils()
 				firstName = req.firstName
 				lastName = req.lastName
 				birthday = req.birthday
@@ -129,8 +165,10 @@ service CustomerCore( params:CustomerCoreParams ) {
 				city = req.city
 				email = req.email
 				phoneNumber = req.phoneNumber
-				moveHistory = void
 			}
+			saveAndFlush@repository(insert)(repo)
+
+			findAllById@repository(insert.customerId)(res)
 		}]
 
 		[changeAddress(req)(res){

@@ -7,11 +7,14 @@ type TestParams: CustomerManagementParams
 
 interface MyTestInterface {
 RequestResponse:
-	// /// @Test
+
+	/// @Test
+	testGetCustomers(void)(void) throws TestFailed(string),
+	/// @Test
 	testGetCustomer(void)(void) throws TestFailed(string),
 	/// @Test
 	testGetCustomerNotFound(void)(void) throws TestFailed(string),
-	// /// @Test
+	/// @Test
 	testUpdateCustomer(void)(void) throws TestFailed(string),
 }
 
@@ -31,6 +34,10 @@ service TestCustomerManagement( params:TestParams ) {
 				method = "get"
 				statusCodes.CustomerNotFound = 404
 			}
+			osc.getCustomers << {
+				template = "/customers"
+				method = "get"
+			}
 			osc.updateCustomer << {
 				template = "/customers/{customerId}"
 				method = "put"
@@ -46,6 +53,21 @@ service TestCustomerManagement( params:TestParams ) {
 	}
 
 	main {
+		[ testGetCustomers()() {
+			getCustomers@CustomerManagement({filter="Vale"})(response)
+			equals@assertions( {
+				actual = response.customers.customerId
+				expected = "r7szqerl7c"
+			})()
+
+			getCustomers@CustomerManagement({filter=""})(response)
+			len = #response.customers
+			equals@assertions( {
+				actual = len
+				expected = 9
+				// expected = 1
+			})()
+		} ]
 		[ testGetCustomer()() {
 			getCustomer@CustomerManagement({ids= "zbej74yalh"})(response)
 			equals@assertions( {

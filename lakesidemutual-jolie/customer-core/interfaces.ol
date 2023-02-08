@@ -38,7 +38,7 @@ type ChangeAddressRequest{
 interface CustomerInformationHolder {
 RequestResponse:
 	getCustomers(GetCustomersRequest)(PaginatedCustomerResponse),
-	getCustomer(GetCustomerRequest)(CustomersResponse) throws CustomerNotFound,
+	getCustomer(GetCustomerRequest)(CustomersResponse),
 	updateCustomer(UpdateCustomerRequest)(CustomerResponse),
 	createCustomer(CustomerProfileUpdateRequest)(CustomerResponse),
 	changeAddress(ChangeAddressRequest)(Address),

@@ -12,7 +12,6 @@ type PhoneNumber:string//(regex(???))
 type CustomerProfileUpdateRequest {
 	firstName:string
 	lastName:string
-	// birthday:Instant
 	birthday:string
 	streetAddress:string
 	postalCode:string

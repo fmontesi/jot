@@ -39,3 +39,11 @@ type CustomerResponse {
 type CustomersResponse {
 	customers*:CustomerResponse
 }
+
+type PaginatedCustomerResponse {
+	filter:string
+	limit:int
+	offset:int
+	size:int
+	customers*:CustomerResponse
+}
