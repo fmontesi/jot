@@ -10,7 +10,7 @@
   "license": "ISC",
   "scripts": {
     "test": "jot test/jot.json",
-    "start": "jolie --trace --params params.json main.ol"
+    "start": "jolie --params params.json main.ol"
   },
   "jolie": {
     "maven": {
