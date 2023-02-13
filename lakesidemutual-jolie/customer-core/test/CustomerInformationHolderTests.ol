@@ -67,12 +67,12 @@ service TestCustomerCore( params:TestParams ) {
 
 	main {
 		[ op1()() {
-			nullProcess
-			// println@console( "op1 is called" )()
+			// nullProcess
+			println@console( "op1 is called" )()
 		} ]
 		[ op2()() {
-			nullProcess
-			// println@console( "op2 is called" )()
+			// nullProcess
+			println@console( "op2 is called" )()
 		} ]
 
 		[ testGetCustomer()() {

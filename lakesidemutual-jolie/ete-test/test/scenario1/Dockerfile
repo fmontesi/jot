@@ -5,8 +5,9 @@ USER root
 COPY /assertions /assertions
 COPY /customer-core /customer-core
 COPY /customer-management /customer-management
+COPY /customer-self-service /customer-self-service
 WORKDIR /app/test
-COPY ete-test/test .
+COPY ete-test/test/scenario1 .
 RUN npm install -g @jolie/jot
 RUN jpm install
-CMD ["jot", "jot.json"]
+ENTRYPOINT ["jot", "jot.json"]

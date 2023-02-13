@@ -168,7 +168,10 @@ service CustomerCore( params:CustomerCoreParams ) {
 			}
 			saveAndFlush@repository(insert)(repo)
 
-			findAllById@repository(insert.customerId)(res)
+			findAllById@repository(insert.customerId)(findResponse)
+
+			res << findResponse.result
+			undef(res.password)
 		}]
 
 		[changeAddress(req)(res){

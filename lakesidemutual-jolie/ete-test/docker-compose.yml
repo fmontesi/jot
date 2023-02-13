@@ -11,8 +11,8 @@ services:
       dockerfile: customer-management/Dockerfile
     depends_on:
       - customer-core
-    ports:
-      - 8080:8080
+    expose:
+      - 8080
     volumes:
       - ./config/customer-management:/config
       - ../customer-core:/app/packages/customer-core
@@ -23,16 +23,23 @@ services:
       dockerfile: customer-self-service/Dockerfile
     depends_on:
       - customer-core
-    ports:
-      - 8080:8080
+    expose:
+      - 8080
     volumes:
-      - ./config/customer-management:/config
+      - ./config/customer-self-service:/config
       - ../customer-core:/app/packages/customer-core
 
-  test:
+  # test1:
+  #   build:
+  #     context: ..
+  #     dockerfile: ete-test/test/scenario1/Dockerfile
+  #   depends_on:
+  #     - customer-management
+
+  test2:
     build:
       context: ..
-      dockerfile: ete-test/test/Dockerfile
+      dockerfile: ete-test/test/scenario2/Dockerfile
     depends_on:
       - customer-management
-    # command: tail -f /dev/null
+      - customer-self-service

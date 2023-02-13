@@ -7,7 +7,7 @@ postalCode text not NULL,
 city text not NULL,
 email text not NULL,
 phoneNumber text not NULL,
-password text not NULL);
+password text);
 
 INSERT INTO customers VALUES ("rgpp0wkpec","Max","Mustermann","1/1/1990","Oberseestrasse 10","8640","Rapperswil","admin@example.com","055 222 4111","1password");
 INSERT INTO customers VALUES ("ce4btlyluu","Robbie","Davenhall","8/12/1961","1 Dunning Trail","5630","Muri","rdavenhall0@example.com","055 222 4111","XNEZSl9LkM");

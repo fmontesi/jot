@@ -17,9 +17,10 @@
       "indirectDependencies": {}
     },
     "dependencies": {
-      "customer-core": "../../customer-core",
-      "customer-management": "../../customer-management",
-      "assertions": "../../assertions"
+      "customer-core": "../../../customer-core",
+      "customer-management": "../../../customer-management",
+      "customer-self-service": "../../../customer-self-service",
+      "assertions": "../../../assertions"
     }
   },
   "dependencies": {

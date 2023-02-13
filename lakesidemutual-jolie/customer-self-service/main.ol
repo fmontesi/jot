@@ -47,7 +47,6 @@ service CustomerSelfService( params: CustomerSelfServiceParams ) {
 
 	main {
 		[getCustomer( request )( response ) {
-			println@console("hello")()
 			scope ( getCustomer ){
 				getCustomer@customerCore( {ids = request.customerId} )( customerCoreResponse )
 				if (#customerCoreResponse.customers > 0 && customerCoreResponse.customers.customerId != ""){

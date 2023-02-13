@@ -87,23 +87,40 @@ service CustomerCoreRepository(p : RepositoryParams) {
 
         [saveAndFlush(req)(res) {
 	        queryRequest =
-	            "INSERT OR IGNORE INTO customers (firstName, lastName, birthday, streetAddress, postalCode, city, email, phoneNumber, customerId) VALUES (:firstName, :lastName, :birthday, :streetAddress, :postalCode, :city, :email, :phoneNumber, :customerId) RETURNING *;"
-            queryRequest.firstName = req.firstName
-            queryRequest.lastName = req.lastName
-            queryRequest.birthday = req.birthday
-            queryRequest.streetAddress = req.streetAddress
-            queryRequest.postalCode = req.postalCode
-            queryRequest.city = req.city
-            queryRequest.email = req.email
-            queryRequest.phoneNumber = req.phoneNumber
+	            "SELECT * FROM customers WHERE customerId = :customerId;";
             queryRequest.customerId = req.customerId
-	        query@database( queryRequest )( res )
-			// println@console("insert" + valueToPrettyString@stringUtils( res ))()
+	        query@database( queryRequest )( selectQueryResponse )
+            if (#selectQueryResponse.row == 0){
+                queryRequest =
+                    "INSERT INTO customers(firstName, lastName, birthday, streetAddress, postalCode, city, email, phoneNumber, customerId) VALUES (:firstName, :lastName, :birthday, :streetAddress, :postalCode, :city, :email, :phoneNumber, :customerId) RETURNING *;"
+                queryRequest.firstName = req.firstName
+                queryRequest.lastName = req.lastName
+                queryRequest.birthday = req.birthday
+                queryRequest.streetAddress = req.streetAddress
+                queryRequest.postalCode = req.postalCode
+                queryRequest.city = req.city
+                queryRequest.email = req.email
+                queryRequest.phoneNumber = req.phoneNumber
+                queryRequest.customerId = req.customerId
+                query@database( queryRequest )( res )
+                println@console("insert" + valueToPrettyString@stringUtils( res ))()
 
-            queryRequest = "UPDATE customers SET firstName = :firstName, lastName = :lastName, birthday = :birthday, streetAddress = :streetAddress, postalCode = :postalCode, city = :city, email = :email, phoneNumber = :phoneNumber WHERE customerId = :customerId RETURNING *;";
-	        query@database( queryRequest )( res )
-			// println@console(valueToPrettyString@stringUtils( res ))()
-			// println@console("update" + valueToPrettyString@stringUtils( res ))()
+            }else{
+                queryRequest = "UPDATE customers SET firstName = :firstName, lastName = :lastName, birthday = :birthday, streetAddress = :streetAddress, postalCode = :postalCode, city = :city, email = :email, phoneNumber = :phoneNumber WHERE customerId = :customerId RETURNING *;";
+                queryRequest.firstName = req.firstName
+                queryRequest.lastName = req.lastName
+                queryRequest.birthday = req.birthday
+                queryRequest.streetAddress = req.streetAddress
+                queryRequest.postalCode = req.postalCode
+                queryRequest.city = req.city
+                queryRequest.email = req.email
+                queryRequest.phoneNumber = req.phoneNumber
+                queryRequest.customerId = req.customerId
+                query@database( queryRequest )( res )
+                println@console("update" + valueToPrettyString@stringUtils( res ))()
+
+            }
+
         }]
 
         [saveAllAndFlush(req)(res){
