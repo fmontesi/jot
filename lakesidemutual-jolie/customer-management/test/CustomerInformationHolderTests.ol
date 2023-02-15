@@ -78,7 +78,7 @@ service TestCustomerManagement( params:TestParams ) {
 
 		[ testGetCustomerNotFound()() {
 			scope ( test ){
-				install( CustomerNotFound => nullProcess)
+				install( CustomerNotFound => nullProcess )
 				getCustomer@CustomerManagement({ids= "smt"})(response)
 				if ( is_defined(response) ){
 					throw(TestFailed, "expect CustomerNotFound")

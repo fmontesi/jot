@@ -5,7 +5,7 @@
 		  "username": "",
 		  "password": "",
 		  "host": "",
-		  "database": "resources/db/db.db",
+		  "database": "resources/db/db2.db",
 		  "driver": "sqlite"
 		}
 	},

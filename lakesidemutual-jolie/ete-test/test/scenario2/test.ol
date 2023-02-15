@@ -84,7 +84,7 @@ service Main {
 
 		[ testScenario2()() {
 			customer << {
-				firstName = "Homer"
+				firstName = "Homer2"
 				lastName = "Simpson"
 				birthday = "12/05/1956"
 				streetAddress = "742 Evergreen Terrace"
@@ -94,9 +94,13 @@ service Main {
 				phoneNumber = "01230304030"
 			}
 			registerCustomer@customerSelfService(customer)(createSelfServiceResponse)
+			equals@assertions( {
+				actual = createSelfServiceResponse.firstName
+				expected = "Homer2"
+			} )()
 
 			
-			getCustomers@customerManagement( { filter = "Homer" } )( responseGetCustomers )
+			getCustomers@customerManagement( { filter = "Homer2" } )( responseGetCustomers )
 			equals@assertions( {
 				actual = #responseGetCustomers.customers
 				expected = 1
@@ -104,7 +108,7 @@ service Main {
 			
 			equals@assertions( {
 				actual = responseGetCustomers.customers.firstName
-				expected = "Homer"
+				expected = "Homer2"
 			} )()
 		} ]
 	}

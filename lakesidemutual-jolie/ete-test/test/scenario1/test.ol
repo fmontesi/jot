@@ -87,30 +87,30 @@ service Main {
 
 		[ testScenario1()() {
 			
-			// getCustomer@customerManagement( { ids = global.user_id } )( responseGetCustomer )
-			// equals@assertions( {
-			// 	actual << responseGetCustomer.customerId
-			// 	expected << global.user_id
-			// } )()
+			getCustomer@customerManagement( { ids = global.user_id } )( responseGetCustomer )
+			equals@assertions( {
+				actual << responseGetCustomer.customerId
+				expected << global.user_id
+			} )()
 
-			// undef(responseGetCustomer.customerId)
-			// responseGetCustomer.firstName = "John"
-			// // update
-			// updateCustomer@customerManagement( { 
-			// 	customerId = global.user_id
-			// 	requestDto << responseGetCustomer
-			// } )( responseUpdateCustomer )
-			// equals@assertions( {
-			// 	actual = responseUpdateCustomer.firstName
-			// 	expected = "John"
-			// } )()
+			undef(responseGetCustomer.customerId)
+			responseGetCustomer.firstName = "John2"
+			// update
+			updateCustomer@customerManagement( { 
+				customerId = global.user_id
+				requestDto << responseGetCustomer
+			} )( responseUpdateCustomer )
+			equals@assertions( {
+				actual = responseUpdateCustomer.firstName
+				expected = "John2"
+			} )()
 
 			
-			// getCustomers@customerManagement( { filter = "John" } )( responseGetCustomers )
-			// equals@assertions( {
-			// 	actual = #responseGetCustomers.customers
-			// 	expected = 1
-			// } )()
+			getCustomers@customerManagement( { filter = "John2" } )( responseGetCustomers )
+			equals@assertions( {
+				actual = #responseGetCustomers.customers
+				expected = 1
+			} )()
 			
 			// equals@assertions( {
 			// 	actual = responseGetCustomers.customers.firstName
