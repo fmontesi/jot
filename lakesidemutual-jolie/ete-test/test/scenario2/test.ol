@@ -29,36 +29,12 @@ service Main {
 
 	execution: sequential
 
-	outputPort customerCore {
-		location: "socket://customer-core:8080"
-		protocol: http {
-			osc.getCustomer << {
-				template = "/customers/{ids}"
-				method = "get"
-			}
-			osc.getCustomers << {
-				template = "/customers"
-				method = "get"
-			}
-			osc.createCustomer << {
-				template = "/customers"
-				method = "post"
-			}
-			format = "json"
-		}
-		interfaces: CustomerInformationHolder_CustomerCore
-	}
-
 	outputPort customerManagement {
 		location: "socket://customer-management:8080"
 		protocol: http {
-			osc.getCustomer << {
-				template = "/customers/{ids}"
-				method = "get"
-			}
-			osc.createCustomer << {
+			osc.getCustomers << {
 				template = "/customers"
-				method = "post"
+				method = "get"
 			}
 		}
 		interfaces: CustomerInformationHolder_CustomerManagement
