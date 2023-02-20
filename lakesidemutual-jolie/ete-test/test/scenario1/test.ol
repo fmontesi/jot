@@ -98,7 +98,7 @@ service Main {
 			} )()
 
 			
-			getCustomers@customerManagement( { filter = "John2" } )( responseGetCustomers )
+			getCustomers@customerManagement( { ids = global.user_id } )( responseGetCustomers )
 			equals@assertions( {
 				actual = #responseGetCustomers.customers
 				expected = 1
