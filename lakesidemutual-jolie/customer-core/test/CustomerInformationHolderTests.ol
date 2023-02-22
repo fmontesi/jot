@@ -7,20 +7,20 @@ type TestParams: CustomerCoreParams
 
 interface MyTestInterface {
 RequestResponse:
-	/// @BeforeAll
+	// /// @BeforeAll
 	op1,
-	/// @AfterAll
+	// /// @AfterAll
 	op2,
 
 	// /// @Test
 	testGetCustomers(void)(void) throws TestFailed(string),
-	// /// @Test
+	/// @Test
 	testGetCustomer(void)(void) throws TestFailed(string),
 	// /// @Test
 	testUpdateCustomer(void)(void) throws TestFailed(string),
 	// /// @Test
 	testUpdateAddressCustomer(void)(void) throws TestFailed(string),
-	/// @Test
+	// /// @Test
 	testCreateCustomer(void)(void) throws TestFailed(string)
 }
 
@@ -36,8 +36,9 @@ service TestCustomerCore( params:TestParams ) {
 		location: params.location
 		protocol: http {
 			osc.getCustomer << {
-				template = "/customers/{ids}"
+				template = "customers/{ids}"
 				method = "get"
+				outHeaders.("Authorization") = ""
 			}
 			osc.getCustomers << {
 				template = "/customers"
@@ -67,18 +68,18 @@ service TestCustomerCore( params:TestParams ) {
 
 	main {
 		[ op1()() {
-			// nullProcess
-			println@console( "op1 is called" )()
+			nullProcess
+			// println@console( "op1 is called" )()
 		} ]
 		[ op2()() {
-			// nullProcess
-			println@console( "op2 is called" )()
+			nullProcess
+			// println@console( "op2 is called" )()
 		} ]
 
 		[ testGetCustomer()() {
 			getCustomer@customerCore({ids= "zbej74yalh"})(response)
 			equals@assertions( {
-				actual = response.customerId
+				actual = response.customers[0].customerId
 				expected = "zbej74yalh"
 			})()
 		} ]

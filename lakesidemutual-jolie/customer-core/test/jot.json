@@ -20,6 +20,12 @@
           }
         }
       }
+    ],
+    "lakesidetest.ol": [
+      {
+        "name": "TestCustomerCore",
+        "params": {}
+      }
     ]
   }
 }
