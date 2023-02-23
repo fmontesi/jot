@@ -98,16 +98,11 @@ service Main {
 			} )()
 
 			
-			getCustomers@customerManagement( { ids = global.user_id } )( responseGetCustomers )
+			getCustomers@customerManagement( { filter="John2" } )( responseGetCustomers )
 			equals@assertions( {
 				actual = #responseGetCustomers.customers
 				expected = 1
 			} )()
-			
-			// equals@assertions( {
-			// 	actual = responseGetCustomers.customers.firstName
-			// 	expected = "John"
-			// } )()
 		} ]
 	}
 }

@@ -1,15 +1,39 @@
-
-
-from customer-core.interfaces import CustomerInformationHolder as CustomerInformationHolder_CustomerCore
-from customer-management.interfaces import CustomerInformationHolder as CustomerInformationHolder_CustomerManagement
-from customer-self-service.interfaces import CustomerInformationHolder as CustomerInformationHolder_CustomerSelfService
-from assertions import Assertions
+from .....assertions import Assertions
 from console import Console
 from string-utils import StringUtils
 
+type GetCustomersRequest {
+	filter?:string //< default: ""
+	limit?:int //< default: 10
+	offset?:int //< default: 0
+	fields?:string //< default: ""
+	authorizationHeader: string
+}
+
+type CreateCustomerRequest {
+	firstname:string
+	lastname:string
+	birthday:string
+	streetAddress:string
+	postalCode:string
+	city:string
+	email:string
+	phoneNumber:string
+	authorizationHeader: string
+}
+
+interface CustomerInformationHolder_CustomerManagement {
+RequestResponse:
+	getCustomers(GetCustomersRequest)(undefined),
+}
+
+interface CustomerInformationHolder_CustomerSelfService {
+RequestResponse:
+	registerCustomer(CreateCustomerRequest)(undefined)
+}
+
 interface TestInterface {
 RequestResponse:
-
 	/// @Test
 	testScenario2(void)(void) throws TestFailed(string)
 }
@@ -27,23 +51,27 @@ service Main {
 	execution: sequential
 
 	outputPort customerManagement {
-		location: "socket://customer-management:8080"
+		location: "socket://localhost:8100"
 		protocol: http {
 			osc.getCustomers << {
-				template = "/customers"
+				template = "customers"
 				method = "get"
+				outHeaders.("Authorization") = "authorizationHeader"
 			}
+			format = "json"
 		}
 		interfaces: CustomerInformationHolder_CustomerManagement
 	}
 
 	outputPort customerSelfService {
-		location: "socket://customer-self-service:8080"
+		location: "socket://localhost:8080"
 		protocol: http {
 			osc.registerCustomer << {
-				template = "/customers"
+				template = "customers"
 				method = "post"
+				outHeaders.("Authorization") = "authorizationHeader"
 			}
+			format = "json"
 		}
 		interfaces: CustomerInformationHolder_CustomerSelfService
 	}
@@ -56,24 +84,25 @@ service Main {
 	main {
 
 		[ testScenario2()() {
-			customer << {
-				firstName = "Homer2"
-				lastName = "Simpson"
-				birthday = "12/05/1956"
+			registerRequest << {
+				firstname = "Homer3"
+				lastname = "Simpson"
+				birthday = "1956-12-05"
 				streetAddress = "742 Evergreen Terrace"
 				postalCode = "89011"
 				city = "Some City"
 				email = "h@simpson.com"
 				phoneNumber = "01230304030"
+				authorizationHeader = "Bearer b318ad736c6c844b"
 			}
-			registerCustomer@customerSelfService(customer)(createSelfServiceResponse)
+			registerCustomer@customerSelfService(registerRequest)(createSelfServiceResponse)
 			equals@assertions( {
 				actual = createSelfServiceResponse.firstName
-				expected = "Homer2"
+				expected = "Homer3"
 			} )()
 
 			
-			getCustomers@customerManagement( { filter = "Homer2" } )( responseGetCustomers )
+			getCustomers@customerManagement( { filter = "Homer3", authorizationHeader = "Bearer 9b93ebe19e16bbbd" } )( responseGetCustomers )
 			equals@assertions( {
 				actual = #responseGetCustomers.customers
 				expected = 1
