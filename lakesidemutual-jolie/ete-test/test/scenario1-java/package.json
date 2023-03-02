@@ -24,6 +24,6 @@
     }
   },
   "dependencies": {
-    "@jolie/jot": "^0.0.12"
+    "@jolie/jot": "^0.0.17"
   }
 }
